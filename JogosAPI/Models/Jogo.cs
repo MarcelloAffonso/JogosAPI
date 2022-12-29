@@ -4,6 +4,8 @@ namespace JogosAPI.Models;
 
 public class Jogo
 {
+    public int Id { get; set; } 
+
     [Required(ErrorMessage ="O título do jogo é obrigatório!")]
     public string Titulo { get; set; }
 
