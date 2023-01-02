@@ -21,7 +21,14 @@ public class JogoController : ControllerBase
         _mapper = mapper;
     }
 
+    /// <summary>
+    /// Adiciona um novo jogo ao banco de dados.
+    /// </summary>
+    /// <param name="jogoDto">Objeto com os campos necessários para a criação de um jogo</param>
+    /// <returns>IActionResult</returns>
+    /// <response code="201">Caso inserção seja feita com sucesso</response>
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     public IActionResult AdicionaJogo(
         [FromBody] CreateJogoDTO jogoDto)
     {
@@ -35,6 +42,11 @@ public class JogoController : ControllerBase
             jogoDto);
     }
 
+    /// <summary>
+    /// Faz uma consulta no banco de dados por todos os jogos em determinado range.
+    /// </summary>
+    /// <param name="skip">Quantidade de jogos que serão "pulados" (usado para paginação).</param>
+    /// <param name="take">Quantidade de jogos que serão "capturados" (usado para paginação).</param>
     [HttpGet]
     public IEnumerable<ReadJogoDTO> RecuperaJogos([FromQuery]int skip = 0, [FromQuery]int take = 50)
     {
@@ -42,6 +54,13 @@ public class JogoController : ControllerBase
         return _mapper.Map<List<ReadJogoDTO>>(_context.Jogos.Skip(skip).Take(take));
     }
 
+    /// <summary>
+    /// Faz uma consulta no banco de dados para buscar por um jogo específico.
+    /// </summary>
+    /// <param name="id">Id do jogo que deverá ser recuperado.</param>
+    /// <returns>IActionResult</returns>
+    /// <response code="201">Caso o jogo exista no banco de dados.</response>
+    /// <response code="404">Caso o jogo não exista exista no banco de dados.</response>
     [HttpGet("{id}")]
     public IActionResult RecuperaJogoPorId(int id)
     {
@@ -54,6 +73,14 @@ public class JogoController : ControllerBase
         return Ok(jogoDTO);
     }
 
+    /// <summary>
+    /// Atualiza o jogo com o id informado no banco de dados.
+    /// </summary>
+    /// <param name="id">Identificador do jogo que deverá ter seus dados atualziados</param>
+    /// <param name="jogoDTO">Objeto com os campos necessários para aatualização do jogo no banco de dados</param>
+    /// <returns></returns>
+    /// <response code="204">Caso o jogo tenha sido encontrado e atualizado no banco de dados.</response>
+    /// <response code="404">Caso o jogo não exista exista no banco de dados.</response>
     [HttpPut("{id}")]
     public IActionResult AtualizaJogo(int id, [FromBody] 
         UpdateJogoDTO jogoDTO)
@@ -71,6 +98,14 @@ public class JogoController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Atualiza parcialmente o jogo com o id informado no banco de dados.
+    /// </summary>
+    /// <param name="id">Identificador do jogo quye deverá ser parcialmente alterado</param>
+    /// <param name="patch">JSON que contém os dados que deverão ser atualizados no jogo que possui o ID informado</param>
+    /// <returns>IActionResult</returns>
+    /// <response code="204">Caso o jogo tenha sido encontrado e atualizado parcialmente no banco de dados.</response>
+    /// <response code="404">Caso o jogo não exista exista no banco de dados.</response>
     [HttpPatch("{id}")]
     public IActionResult AtualizaJogoParcial(int id, JsonPatchDocument<UpdateJogoDTO> patch)
     {
@@ -97,6 +132,13 @@ public class JogoController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Remove o jogo que possui o Id informado do banco de dados
+    /// </summary>
+    /// <param name="id">Identificador do jogo que deverá ser removido do banco de dados</param>
+    /// <returns>IActionResult</returns>
+    /// <response code="204">Caso o jogo tenha sido encontrado e removido do banco de dados.</response>
+    /// <response code="404">Caso o jogo não exista exista no banco de dados.</response>
     [HttpDelete("{id}")]
     public IActionResult DeletaJogo(int id)
     {
